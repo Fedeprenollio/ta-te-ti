@@ -13,7 +13,7 @@ export const Timer = ({ timeLeft, setTimer }) => {
       // El valor es un número válido
       const seconds = parseInt(timer, 10); // Convertir a entero si es necesario
       // Realiza las operaciones necesarias con el valor numérico
-      setTimer(seconds)
+      setTimer(seconds);
     } else {
       // El valor no es un número válido
       setError("Debes ingresar números unicamente");
@@ -22,20 +22,21 @@ export const Timer = ({ timeLeft, setTimer }) => {
   return (
     <div>
       <div>
-        <form onSubmit={handleTimer}  className="container-form">
+        <form onSubmit={handleTimer} className="container-form">
           <label htmlFor="timer">Tiempo:</label>
-          <input
-            type="text"
-            name="timer"
-            id="timer"
-            placeholder="10 segundos..."
-          />
-          {error && <span className="error">{error}</span>}
-          <button>Cambiar</button>
+          <div>
+            <input
+              type="text"
+              name="timer"
+              id="timer"
+              placeholder="10 segundos..."
+            />
+            {error && <span className="error">{error}</span>}
+            <button>Cambiar</button>
+          </div>
         </form>
       </div>
       <div className="container-timer">
-        {" "}
         <h4>Tiempo restante: </h4>
         <h2 className="timer">{timeLeft} seg</h2>
       </div>
