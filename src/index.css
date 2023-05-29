@@ -42,7 +42,7 @@ body {
 
 .board button {
   padding: 8px 12px;
-  margin: 25px;
+  margin: 5px 25px;
   background: transparent;
   border: 2px solid #eee;
   color: #eee;
@@ -60,8 +60,16 @@ body {
 
 .board .game {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
+}
+
+.board3x3{
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.board6x7{
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(6, 1fr);
 }
 
 .turn {
@@ -134,28 +142,7 @@ body {
   font-size: 48px;
 }
 
-@media (max-width: 450px) {
-  .square{
-    width: 50px;
-    height: 50px;
-    font-size: 35px;
-  }
-  .text{
-    max-width: 450px;
-  }
-}
 
-
-@media (max-width: 350px) {
-  
-
-  .winner .text {
-    width: 250px;
-
-  }
- 
- 
-}
 
 .container-key{
   position: relative;
@@ -164,7 +151,27 @@ body {
 
 }
 
+#keys{
+  margin: 10px;
+}
+
 .key{
+  font-size: 10px;
+  position: absolute;
+  bottom: 0;
+  right: 50%;
+  /* padding: 5px; */
+
+}
+.key-l{
+  font-size: 10px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 5px;
+
+}
+.key-r{
   font-size: 10px;
   position: absolute;
   bottom: 0;
@@ -178,9 +185,19 @@ body {
   src: url('./fonts/digital.ttf') format('truetype');
 }
 
+.container-setting{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+
 .container-form{
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  
 }
 .error{
   color: red;
@@ -194,9 +211,51 @@ body {
   align-items: center;
 }
 
-
+input, select{
+  width: 100px;
+  height: 25px;
+}
 .timer{
   /* font-family: 'Share Tech Mono', monospace; */
   font-family: 'Digital-7', Arial, sans-serif;
   font-size: 60px;
+}
+
+.form-mode{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start
+}
+
+
+
+
+@media (max-width: 450px) {
+  .game{
+    max-width: 200px;
+    padding: 5px;
+    margin: 0 auto;
+
+  }
+  .square{
+    width: 60px;
+    height: 60px;
+    font-size: 35px;
+  }
+  .text{
+    max-width: 450px;
+  }
+
+}
+
+
+@media (max-width: 350px) {
+  
+
+  .winner .text {
+    width: 250px;
+
+  }
+ 
+ 
 }

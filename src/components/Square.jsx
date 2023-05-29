@@ -1,15 +1,107 @@
-
-const Square = ({ children, isSelected, updateBoard, index }) => {
-  const className = `square container-key ${isSelected ? 'is-selected' : ''}`
+const Square = ({ children, isSelected, updateBoard, index, boardSize }) => {
+  console.log("ES?" ,boardSize)
+  const className = `square container-key ${isSelected ? "is-selected" : ""}`;
   const handleClick = () => {
-    updateBoard(index)
-  }
-  return (
-    <div  onClick={handleClick} className={className}>
-      {children}
-      <span className="key">{index}</span>
-    </div>
-  )
-}
+    updateBoard(index);
+  };
+  // para el tateti
+  function KeyBoardKeyTateti() {
+    switch (index) {
+      case 0:
+        return (
+          <div>
+            <span className="key-l">q</span>
+            <span className="key">{index + 1}</span>
+            <span className="key-r">u</span>
+          </div>
+        );
 
-export default Square
+        break;
+
+      case 1:
+        return (
+          <div>
+            <span className="key-l">w</span>
+            <span className="key">{index + 1}</span>
+            <span className="key-r">i</span>
+          </div>
+        );
+
+      case 2:
+        return (
+          <div>
+            <span className="key-l">e</span>
+            <span className="key">{index + 1}</span>
+            <span className="key-r">o</span>
+          </div>
+        );
+      case 3:
+        return (
+          <div>
+            <span className="key-l">a</span>
+            <span className="key">{index + 1}</span>
+            <span className="key-r">j</span>
+          </div>
+        );
+      case 4:
+        return (
+          <div>
+            <span className="key-l">s</span>
+            <span className="key">{index + 1}</span>
+            <span className="key-r">k</span>
+          </div>
+        );
+      case 5:
+        return (
+          <div>
+            <span className="key-l">d</span>
+            <span className="key">{index + 1}</span>
+            <span className="key-r">u</span>
+          </div>
+        );
+      case 6:
+        return (
+          <div>
+            <span className="key-l">z</span>
+            <span className="key">{index + 1}</span>
+            <span className="key-r">n</span>
+          </div>
+        );
+      case 7:
+        return (
+          <div>
+            <span className="key-l">x</span>
+            <span className="key">{index + 1}</span>
+            <span className="key-r">m</span>
+          </div>
+        );
+      case 8:
+        return (
+          <div>
+            <span className="key-l">c</span>
+            <span className="key">{index + 1}</span>
+            <span className="key-r">,</span>
+          </div>
+        );
+      default:
+        break;
+    }
+  }
+
+  // para el 4 en linea
+  function KeyBoard4InLine() {
+    if (index <= 6) {
+      return <span className="key">{index + 1}</span>;
+    }
+  }
+
+  return (
+    <div onClick={handleClick} className={className}>
+      {children}
+      {/* <span className="key">{index + 1}</span> */}
+      {boardSize?.size === 9 ? <KeyBoardKeyTateti /> : <KeyBoard4InLine />}
+    </div>
+  );
+};
+
+export default Square;
