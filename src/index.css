@@ -156,3 +156,47 @@ body {
  
  
 }
+
+.container-key{
+  position: relative;
+  height: 100px;
+  width: 100px;
+
+}
+
+.key{
+  font-size: 10px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 5px;
+
+}
+
+@font-face {
+  font-family: 'Digital-7';
+  src: url('./fonts/digital.ttf') format('truetype');
+}
+
+.container-form{
+  display: flex;
+  flex-direction: column;
+}
+.error{
+  color: red;
+}
+
+.container-timer{
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+
+.timer{
+  /* font-family: 'Share Tech Mono', monospace; */
+  font-family: 'Digital-7', Arial, sans-serif;
+  font-size: 60px;
+}
