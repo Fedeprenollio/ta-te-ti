@@ -256,9 +256,9 @@ input, select{
 
 @media (max-width: 350px) {
   
-  .winner{
+  /* .winner{
     width: 100%;
-}
+} */
   .winner .text {
     width: 250px;
 
