@@ -30,6 +30,7 @@ body {
 }
 
 .board {
+  position: relative;
   width: fit-content;
   margin: 40px auto;
   text-align: center;
@@ -103,6 +104,10 @@ body {
   display: grid;
   place-items: center;
   background-color: rgba(0, 0, 0, 0.7);
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
 }
 
 .winner .text {
@@ -251,7 +256,9 @@ input, select{
 
 @media (max-width: 350px) {
   
-
+  .winner{
+    width: 100%;
+}
   .winner .text {
     width: 250px;
 
@@ -259,3 +266,4 @@ input, select{
  
  
 }
+
