@@ -35,6 +35,7 @@ function App() {
     board,
     setWinner,
     winner,
+    turn
   });
   const updateBoard = (index) => {
     if (boardSize.size === 42) {
@@ -45,7 +46,6 @@ function App() {
         const posicion = fila * 7 + columna;
 
         if (tablero[posicion] === null) {
-          console.log(tablero[posicion]);
           const newBoard = [...board];
           newBoard[posicion] = turn;
           setBoard(newBoard);

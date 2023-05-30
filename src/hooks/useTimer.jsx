@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 import { TURNS } from "../constants";
 
-export function useTimer({board, setWinner,winner}) {
+export function useTimer({board, setWinner,winner, turn}) {
     const [timer , setTimer ] = useState(8)
     const [timeLeft, setTimeLeft] = useState(timer)
 
     // TIMER logica
   useEffect(() => {
     if(board?.includes(TURNS.X) || board?.includes(TURNS.O)){
-      if (TURNS.X && timeLeft === 0) {
+      console.log(turn)
+      if ( turn === TURNS.X && timeLeft === 0) {
        // Lógica a ejecutar cuando se agota el tiempo
         setWinner(TURNS.O)
-      }else if(TURNS.O && timeLeft === 0){
+      }else if( turn === TURNS.O && timeLeft === 0){
         setWinner(TURNS.X)
       }
   

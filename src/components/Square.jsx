@@ -1,5 +1,4 @@
 const Square = ({ children, isSelected, updateBoard, index, boardSize }) => {
-  console.log("ES?" ,boardSize)
   const className = `square container-key ${isSelected ? "is-selected" : ""}`;
   const handleClick = () => {
     updateBoard(index);
