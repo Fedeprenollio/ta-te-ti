@@ -4,21 +4,22 @@ import { TURNS } from "../constants";
 export function useTimer({board, setWinner,winner, turn}) {
     const [timer , setTimer ] = useState(8)
     const [timeLeft, setTimeLeft] = useState(timer)
+    const [classTime, setClassTime] = useState("")
 
     // TIMER logica
   useEffect(() => {
     if(board?.includes(TURNS.X) || board?.includes(TURNS.O)){
-      console.log(turn)
-      if ( turn === TURNS.X && timeLeft === 0) {
+      if ( turn === TURNS.X && timeLeft <= 0.0) {
        // Lógica a ejecutar cuando se agota el tiempo
         setWinner(TURNS.O)
-      }else if( turn === TURNS.O && timeLeft === 0){
+      }else if( turn === TURNS.O && timeLeft <= 0.0){
         setWinner(TURNS.X)
       }
+      
   
       const timer = setTimeout(() => {
-        setTimeLeft((prevTime) => prevTime - 1);
-      }, 1000);
+        setTimeLeft((prevTime) => prevTime - 0.1);
+      }, 100);
 
       if(winner !== null){
         clearTimeout(timer)
@@ -28,11 +29,27 @@ export function useTimer({board, setWinner,winner, turn}) {
     }
 
   }, [timeLeft,board,winner]);
-
+ 
+  
   useEffect(() => {
  setTimeLeft(timer)
+
+
+ 
   }, [timer])
+
+  useEffect(() => {
+     if(timeLeft <= 3.0){
+  setClassTime("alert-time")
+ }
   
-return { timer, setTimer, timeLeft, setTimeLeft}
+    return () => {
+      setClassTime("")
+
+    }
+  }, [timeLeft])
+  
+  
+return { timer, setTimer, timeLeft, setTimeLeft,classTime}
     
 }

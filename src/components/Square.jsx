@@ -89,11 +89,13 @@ const Square = ({ children, isSelected, updateBoard, index, boardSize }) => {
 
   // para el 4 en linea
   function KeyBoard4InLine() {
-    if (index <= 6) {
+    if (index <= 6)  {
       return <span className="key">{index + 1}</span>;
-    }
+    }else if( index >=35){
+      return <span className="key">{index -34}</span>;
+    } 
   }
-
+console.log(boardSize)
   return (
     <div onClick={handleClick} className={className}>
       {children}
