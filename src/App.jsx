@@ -10,6 +10,7 @@ import { saveGameToStorage, resetGameToStorage } from "./logic/storage";
 import { Timer } from "./components/Timer";
 import { useTimer } from "./hooks/useTimer";
 import { SelectMode } from "./components/SelectMode";
+import { FormOnlineGame } from "./components/FormOnlineGame";
 
 function App() {
   const [boardSize, setboardSize] = useState(()=>{
@@ -42,6 +43,7 @@ function App() {
     turn
   });
   const updateBoard = (index) => {
+    console.log("INDEX", index,"TAMAÑO ",boardSize,"--")
     if (boardSize.size === 42) {
       const tablero = board;
       const columna = index % 7;
@@ -54,6 +56,7 @@ function App() {
           newBoard[posicion] = turn;
           setBoard(newBoard);
           const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X;
+          console.log("Turnos", newTurn)
           if (newTurn) {
             setTimeLeft(timer);
           }
@@ -111,11 +114,10 @@ function App() {
     e.preventDefault()
     const values = e.target.value;
     const lastLetter = values[values.length - 1];
-    if(values ==="" || values === " "){
-      e.preventDefault()
-      console.log("QUE PASA")
+    // if(values ==="" || values === " "){
+    //   e.preventDefault()
 
-    }
+    // }
     if(lastLetter === "") return
     const keysEnabled = boardSize?.size === 9 ? "123456789qweasdzxcuiojklnm," : "12345678"
     if (keysEnabled.includes(lastLetter)) {
@@ -210,6 +212,10 @@ function App() {
         <Square isSelected={turn === TURNS.X}>{TURNS.X}</Square>
         <Square isSelected={turn === TURNS.O}>{TURNS.O}</Square>
       </section>
+
+    <section>
+      <FormOnlineGame boardSize={boardSize} updateBoard={updateBoard} turn={turn}/>
+    </section>
 
       <WinnerModal winner={winner} resetGame={resetGame} />
     </main>

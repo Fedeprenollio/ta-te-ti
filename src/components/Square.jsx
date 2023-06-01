@@ -95,7 +95,6 @@ const Square = ({ children, isSelected, updateBoard, index, boardSize }) => {
       return <span className="key">{index -34}</span>;
     } 
   }
-console.log(boardSize)
   return (
     <div onClick={handleClick} className={className}>
       {children}
