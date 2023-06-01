@@ -204,8 +204,11 @@ function App() {
 
       <section>
         <form onSubmit={handleSubmit} onChange={handleChange}>
-          <label htmlFor="keys">Tus teclas:</label>
-          <input type="text" id="keys" autoFocus placeholder="1 2 3 a s d..." />
+          <div  className="input-container">
+              <label htmlFor="keys">Tus teclas:</label>
+              <input type="text" id="keys" autoFocus placeholder="1 2 3 a s d..." />
+          </div>
+          <span>Alternate con tu amigo con el mouse o tecleando</span>
         </form>
       </section>
       <section className="turn">

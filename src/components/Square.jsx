@@ -55,7 +55,7 @@ const Square = ({ children, isSelected, updateBoard, index, boardSize }) => {
           <div>
             <span className="key-l">d</span>
             <span className="key">{index + 1}</span>
-            <span className="key-r">u</span>
+            <span className="key-r">l</span>
           </div>
         );
       case 6:
