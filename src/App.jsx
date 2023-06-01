@@ -12,14 +12,18 @@ import { useTimer } from "./hooks/useTimer";
 import { SelectMode } from "./components/SelectMode";
 
 function App() {
-  const [boardSize, setboardSize] = useState({
-    size: 42,
-    grid: 6 * 7,
-    classNameGrid: "board6x7",
+  const [boardSize, setboardSize] = useState(()=>{
+    const boardSizeFromLocalStorage = window.localStorage.getItem("mode");
+    return boardSizeFromLocalStorage ? JSON.parse(boardSizeFromLocalStorage) : {
+      size: 42,
+      grid: 6 * 7,
+      classNameGrid: "board6x7",
+    }
   });
 
   const [board, setBoard] = useState(() => {
     const boardFromLocalStorage = window.localStorage.getItem("board");
+    console.log(boardFromLocalStorage)
     return boardFromLocalStorage
       ? JSON.parse(boardFromLocalStorage)
       : Array(42).fill(null);
@@ -31,10 +35,11 @@ function App() {
   });
   // null es que no hay ganador, false es que hay empate
   const [winner, setWinner] = useState(null);
-  const { timer, setTimer, timeLeft, setTimeLeft } = useTimer({
+  const { timer, setTimer, timeLeft, setTimeLeft,classTime } = useTimer({
     board,
     setWinner,
     winner,
+    turn
   });
   const updateBoard = (index) => {
     if (boardSize.size === 42) {
@@ -45,7 +50,6 @@ function App() {
         const posicion = fila * 7 + columna;
 
         if (tablero[posicion] === null) {
-          console.log(tablero[posicion]);
           const newBoard = [...board];
           newBoard[posicion] = turn;
           setBoard(newBoard);
@@ -55,7 +59,7 @@ function App() {
           }
           setTurn(newTurn);
           // guardar partida:
-          saveGameToStorage({ board: newBoard, turn: newTurn });
+          saveGameToStorage({ board: newBoard, turn: newTurn, mode: boardSize });
 
           // revisar si tenemos ganador:
           const newWinner = checkWinner(newBoard, boardSize.size);
@@ -80,7 +84,7 @@ function App() {
       }
       setTurn(newTurn);
       // guardar partida:
-      saveGameToStorage({ board: newBoard, turn: newTurn });
+      saveGameToStorage({ board: newBoard, turn: newTurn, mode: boardSize });
 
       // revisar si tenemos ganador:
       const newWinner = checkWinner(newBoard, boardSize.size);
@@ -102,24 +106,18 @@ function App() {
     setTimeLeft(timer);
   };
 
-  // const handleTimeout = () => {
-  //   // Lógica a ejecutar cuando se agota el tiempo
-  //   // Por ejemplo:
-  //   console.log(`Se agotó el tiempo para el jugador ${turn}`);
-  //   handlePlayerChange();
-  // };
-
-  // const handlePlayerChange = () => {
-  //   // Lógica para cambiar de jugador
-  //   // Por ejemplo:
-  //   setPlayer((prevPlayer) => (prevPlayer === 'X' ? 'O' : 'X'));
-  //   setTimeLeft(2); // Reiniciar el tiempo para el nuevo jugador
-  // };
 
   const handleChange = (e) => {
-    const keysEnabled = boardSize?.size === 9 ? "123456789qweasdzxcuiojklnm," : "12345678"
+    e.preventDefault()
     const values = e.target.value;
     const lastLetter = values[values.length - 1];
+    if(values ==="" || values === " "){
+      e.preventDefault()
+      console.log("QUE PASA")
+
+    }
+    if(lastLetter === "") return
+    const keysEnabled = boardSize?.size === 9 ? "123456789qweasdzxcuiojklnm," : "12345678"
     if (keysEnabled.includes(lastLetter)) {
       const key = e.target.value.toLowerCase();
       let value;
@@ -180,12 +178,16 @@ function App() {
     // ------
   };
 
+  const handleSubmit =(e)=>{
+    e.preventDefault()
+  }
+
   return (
     <main className="board">
       <h1>Ta-te-ti</h1>
       <div className="container-setting">
         <SelectMode setboardSize={setboardSize} setBoard={setBoard} />
-        <Timer timeLeft={timeLeft} setTimer={setTimer} />
+        <Timer timeLeft={timeLeft} setTimer={setTimer}  classTime={classTime}/>
       </div>
       <button onClick={resetGame}>Resetear el juego</button>
       <section className={`game ${boardSize.classNameGrid}`}>
@@ -199,7 +201,7 @@ function App() {
       </section>
 
       <section>
-        <form onChange={handleChange}>
+        <form onSubmit={handleSubmit} onChange={handleChange}>
           <label htmlFor="keys">Tus teclas:</label>
           <input type="text" id="keys" autoFocus placeholder="1 2 3 a s d..." />
         </form>
