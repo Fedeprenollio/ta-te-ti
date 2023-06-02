@@ -2,8 +2,10 @@ import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { io } from "socket.io-client";
+import { TURNS } from "../constants";
 
 export const FormOnlineGame = ({ boardSize, updateBoard, turn }) => {
+  const [player, setPlayer] = useState(false);
 
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState("");
@@ -23,11 +25,9 @@ export const FormOnlineGame = ({ boardSize, updateBoard, turn }) => {
 
     // Manejar mensajes entrantes
     newSocket.on("chat message", (message) => {
-      console.log(message);
-      setMessages(message);
-      //   const lastLeter =message?.slice(-1)
+      console.log("BOOLEANo", message.player === TURNS.O);
 
-      //   updateBoardOnline(lastLeter)
+      setMessages(message);
     });
 
     // Limpiar la conexión cuando el componente se desmonta
@@ -35,27 +35,21 @@ export const FormOnlineGame = ({ boardSize, updateBoard, turn }) => {
       newSocket.disconnect();
     };
   }, [room]);
-  console.log(typeof turn);
   useEffect(() => {
     const lastLeter = messages?.jugada?.slice(-1);
     updateBoardOnline(lastLeter);
-    
   }, [messages]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // if (inputValue.trim() !== "") {
-    //   // Enviar el mensaje al servidor
-    //   socket.emit("chat message", inputValue);
-    //   setInputValue("");
-    // }
   };
-
+  console.log("JODER:", turn, player);
   const handleInputChange = (e) => {
+    if (turn !== player) return;
     setInputValue(e.target.value);
     if (e.target.value.trim() !== "") {
       // Enviar el mensaje al servidor
-      socket.emit("chat message", { jugada: e.target.value, player: turn });
+      socket.emit("chat message", { jugada: e.target.value, turn, player });
 
       setInputValue("");
     }
@@ -68,86 +62,97 @@ export const FormOnlineGame = ({ boardSize, updateBoard, turn }) => {
   };
 
   const updateBoardOnline = (index) => {
-    if(index){
-        const values = index;
-        const lastLetter = values[values?.length - 1];
-        if (lastLetter === "") return;
+    if (index) {
+      const values = index;
+      const lastLetter = values[values?.length - 1];
+      if (lastLetter === "") return;
 
-   
-    console.log(index);
+      const keysEnabled =
+        boardSize?.size === 9 ? "123456789qweasdzxcuiojklnm," : "12345678";
+      if (keysEnabled.includes(lastLetter)) {
+        const key = index.toLowerCase();
+        let value;
 
-    const keysEnabled =
-      boardSize?.size === 9 ? "123456789qweasdzxcuiojklnm," : "12345678";
-    if (keysEnabled.includes(lastLetter)) {
-      const key = index.toLowerCase();
-      let value;
-
-      switch (lastLetter) {
-        case "1":
-        case "q":
-        case "u":
-          value = 1;
-          break;
-        case "2":
-        case "w":
-        case "i":
-          value = 2;
-          break;
-        case "3":
-        case "e":
-        case "o":
-          value = 3;
-          break;
-        case "4":
-        case "a":
-        case "j":
-          value = 4;
-          break;
-        case "5":
-        case "s":
-        case "k":
-          value = 5;
-          break;
-        case "6":
-        case "d":
-        case "l":
-          value = 6;
-          break;
-        case "7":
-        case "z":
-        case "n":
-          value = 7;
-          break;
-        case "8":
-        case "x":
-        case "m":
-          value = 8;
-          break;
-        case "9":
-        case "c":
-        case ",":
-          value = 9;
-          break;
-        default:
-          value = null;
-          break;
+        switch (lastLetter) {
+          case "1":
+          case "q":
+          case "u":
+            value = 1;
+            break;
+          case "2":
+          case "w":
+          case "i":
+            value = 2;
+            break;
+          case "3":
+          case "e":
+          case "o":
+            value = 3;
+            break;
+          case "4":
+          case "a":
+          case "j":
+            value = 4;
+            break;
+          case "5":
+          case "s":
+          case "k":
+            value = 5;
+            break;
+          case "6":
+          case "d":
+          case "l":
+            value = 6;
+            break;
+          case "7":
+          case "z":
+          case "n":
+            value = 7;
+            break;
+          case "8":
+          case "x":
+          case "m":
+            value = 8;
+            break;
+          case "9":
+          case "c":
+          case ",":
+            value = 9;
+            break;
+          default:
+            value = null;
+            break;
+        }
+        updateBoard(value - 1);
       }
-      updateBoard(value - 1);
-      //   if (e.target.value.trim() !== "") {
-      //     // Enviar el mensaje al servidor
-      //     console.log("aca")
-      //     socket.emit("chat message", e.target.value);
-
-      // }
     }
-}
     // ------
   };
 
+  const handleChange = (event) => {
+    setPlayer(event.target.value);
+    if (event.target.value) {
+      socket.emit("chat message", {
+        jugada: null,
+        turn: null,
+        player: event.target.value,
+      });
+    }
+  };
+
+  console.log("nada", messages);
+  useEffect(() => {
+    if (player === false && messages.player === TURNS.O) {
+      setPlayer(TURNS.X);
+    } else if (player === false && messages.player === TURNS.X) {
+      setPlayer(TURNS.O);
+    }
+  }, [messages.player]);
+
   return (
     <div>
-      <h3>online game</h3>
-      <h1>Ultima letra:{messages.jugada}</h1>
+      <h3>Juego Online</h3>
+      <h1>Tu eres:{player}</h1>
       <form onSubmit={handleSubmit} onChange={handleInputChange}>
         <label htmlFor="keys">Tus teclas:</label>
         <input
@@ -159,6 +164,42 @@ export const FormOnlineGame = ({ boardSize, updateBoard, turn }) => {
         />
         <button type="submit">Jugar</button>
       </form>
+
+      <div>
+        <label>
+          {TURNS.X}
+          <input
+            disabled={player === TURNS.O}
+            type="radio"
+            name="jugador"
+            value={TURNS.X}
+            checked={player === TURNS.X}
+            onChange={handleChange}
+          />
+        </label>
+
+        <label>
+          {TURNS.O}
+          <input
+            disabled={player === TURNS.X}
+            type="radio"
+            name="jugador"
+            value={TURNS.O}
+            checked={player === TURNS.O}
+            onChange={handleChange}
+          />
+        </label>
+        {/* <label>
+       Recetear:
+        <input
+          type="radio"
+          name="jugador"
+          value={"-"}
+          checked={player === TURNS.O}
+          onChange={handleChange}
+        />
+      </label> */}
+      </div>
 
       <form onSubmit={handleSubmitRoom}>
         <input type="text" name="room" />
