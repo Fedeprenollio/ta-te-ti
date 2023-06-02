@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { io } from "socket.io-client";
 import { TURNS } from "../constants";
+import { getkeyBoard } from "../logic/getKeyBoard";
 
 export const FormOnlineGame = ({ boardSize, updateBoard, turn }) => {
   const [player, setPlayer] = useState(false);
@@ -12,6 +13,77 @@ export const FormOnlineGame = ({ boardSize, updateBoard, turn }) => {
   console.log("los mnks", messages);
   const [inputValue, setInputValue] = useState("");
   const [room, setRoom] = useState(1);
+
+  function updateBoardOnline(index){
+    console.log("index online:;", index)
+    if (index) {
+      const values = index;
+      const lastLetter = values[values?.length - 1];
+      const key = getkeyBoard({lastLetter,boardSize})
+    updateBoard(key)
+      // if (lastLetter === "") return;
+
+      // const keysEnabled =
+      //   boardSize?.size === 9 ? "123456789qweasdzxcuiojklnm," : "12345678";
+      // if (keysEnabled.includes(lastLetter)) {
+      //   const key = index.toLowerCase();
+      //   let value;
+
+      //   switch (lastLetter) {
+      //     case "1":
+      //     case "q":
+      //     case "u":
+      //       value = 1;
+      //       break;
+      //     case "2":
+      //     case "w":
+      //     case "i":
+      //       value = 2;
+      //       break;
+      //     case "3":
+      //     case "e":
+      //     case "o":
+      //       value = 3;
+      //       break;
+      //     case "4":
+      //     case "a":
+      //     case "j":
+      //       value = 4;
+      //       break;
+      //     case "5":
+      //     case "s":
+      //     case "k":
+      //       value = 5;
+      //       break;
+      //     case "6":
+      //     case "d":
+      //     case "l":
+      //       value = 6;
+      //       break;
+      //     case "7":
+      //     case "z":
+      //     case "n":
+      //       value = 7;
+      //       break;
+      //     case "8":
+      //     case "x":
+      //     case "m":
+      //       value = 8;
+      //       break;
+      //     case "9":
+      //     case "c":
+      //     case ",":
+      //       value = 9;
+      //       break;
+      //     default:
+      //       value = null;
+      //       break;
+      //   }
+      //   updateBoard(value - 1);
+      // }
+    }
+    // ------
+  };
   useEffect(() => {
     // Conectar al servidor de Socket.IO
     //https://backend-playroom.vercel.app/
@@ -37,13 +109,15 @@ export const FormOnlineGame = ({ boardSize, updateBoard, turn }) => {
   }, [room]);
   useEffect(() => {
     const lastLeter = messages?.jugada?.slice(-1);
-    updateBoardOnline(lastLeter);
+    if(lastLeter){
+      updateBoardOnline(lastLeter);
+
+    }
   }, [messages]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
   };
-  console.log("JODER:", turn, player);
   const handleInputChange = (e) => {
     if (turn !== player) return;
     setInputValue(e.target.value);
@@ -61,73 +135,7 @@ export const FormOnlineGame = ({ boardSize, updateBoard, turn }) => {
     setRoom(room);
   };
 
-  const updateBoardOnline = (index) => {
-    if (index) {
-      const values = index;
-      const lastLetter = values[values?.length - 1];
-      if (lastLetter === "") return;
-
-      const keysEnabled =
-        boardSize?.size === 9 ? "123456789qweasdzxcuiojklnm," : "12345678";
-      if (keysEnabled.includes(lastLetter)) {
-        const key = index.toLowerCase();
-        let value;
-
-        switch (lastLetter) {
-          case "1":
-          case "q":
-          case "u":
-            value = 1;
-            break;
-          case "2":
-          case "w":
-          case "i":
-            value = 2;
-            break;
-          case "3":
-          case "e":
-          case "o":
-            value = 3;
-            break;
-          case "4":
-          case "a":
-          case "j":
-            value = 4;
-            break;
-          case "5":
-          case "s":
-          case "k":
-            value = 5;
-            break;
-          case "6":
-          case "d":
-          case "l":
-            value = 6;
-            break;
-          case "7":
-          case "z":
-          case "n":
-            value = 7;
-            break;
-          case "8":
-          case "x":
-          case "m":
-            value = 8;
-            break;
-          case "9":
-          case "c":
-          case ",":
-            value = 9;
-            break;
-          default:
-            value = null;
-            break;
-        }
-        updateBoard(value - 1);
-      }
-    }
-    // ------
-  };
+  
 
   const handleChange = (event) => {
     setPlayer(event.target.value);

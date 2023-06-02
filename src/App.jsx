@@ -9,8 +9,10 @@ import { TURNS } from "./constants";
 import { saveGameToStorage, resetGameToStorage } from "./logic/storage";
 import { Timer } from "./components/Timer";
 import { useTimer } from "./hooks/useTimer";
-import { SelectMode } from "./components/SelectMode";
+import { SelectGame } from "./components/SelectGame";
 import { FormOnlineGame } from "./components/FormOnlineGame";
+import { useUpdateBoard } from "./hooks/useUpdateBoard";
+import { getkeyBoard } from "./logic/getKeyBoard";
 
 function App() {
   const [boardSize, setboardSize] = useState(()=>{
@@ -42,63 +44,65 @@ function App() {
     winner,
     turn
   });
-  const updateBoard = (index) => {
-    console.log("INDEX", index,"TAMAÑO ",boardSize,"--")
-    if (boardSize.size === 42) {
-      const tablero = board;
-      const columna = index % 7;
 
-      for (let fila = 5; fila >= 0; fila--) {
-        const posicion = fila * 7 + columna;
+  const {updateBoard} = useUpdateBoard({board, setBoard, turn, setTurn, winner, setWinner, boardSize, timer, setTimeLeft, saveGameToStorage, checkWinner, checkEndGame, confetti});
 
-        if (tablero[posicion] === null) {
-          const newBoard = [...board];
-          newBoard[posicion] = turn;
-          setBoard(newBoard);
-          const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X;
-          console.log("Turnos", newTurn)
-          if (newTurn) {
-            setTimeLeft(timer);
-          }
-          setTurn(newTurn);
-          // guardar partida:
-          saveGameToStorage({ board: newBoard, turn: newTurn, mode: boardSize });
+  // const updateBoard = (index) => {
+  //   if (boardSize.size === 42) {
+  //     const tablero = board;
+  //     const columna = index % 7;
 
-          // revisar si tenemos ganador:
-          const newWinner = checkWinner(newBoard, boardSize.size);
-          if (newWinner) {
-            confetti();
-            setWinner(newWinner);
-          } else if (checkEndGame(newBoard)) {
-            setWinner(false);
-          }
-          break;
-        }
-      }
-    } else {
-      if (board[index] || winner) return; // si existe algo en el casillero que marcamos, RETURN
-      const newBoard = [...board];
-      newBoard[index] = turn;
-      setBoard(newBoard);
+  //     for (let fila = 5; fila >= 0; fila--) {
+  //       const posicion = fila * 7 + columna;
 
-      const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X;
-      if (newTurn) {
-        setTimeLeft(timer);
-      }
-      setTurn(newTurn);
-      // guardar partida:
-      saveGameToStorage({ board: newBoard, turn: newTurn, mode: boardSize });
+  //       if (tablero[posicion] === null) {
+  //         const newBoard = [...board];
+  //         newBoard[posicion] = turn;
+  //         setBoard(newBoard);
+  //         const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X;
+  //         console.log("Turnos", newTurn)
+  //         if (newTurn) {
+  //           setTimeLeft(timer);
+  //         }
+  //         setTurn(newTurn);
+  //         // guardar partida:
+  //         saveGameToStorage({ board: newBoard, turn: newTurn, mode: boardSize });
 
-      // revisar si tenemos ganador:
-      const newWinner = checkWinner(newBoard, boardSize.size);
-      if (newWinner) {
-        confetti();
-        setWinner(newWinner);
-      } else if (checkEndGame(newBoard)) {
-        setWinner(false);
-      }
-    }
-  };
+  //         // revisar si tenemos ganador:
+  //         const newWinner = checkWinner(newBoard, boardSize.size);
+  //         if (newWinner) {
+  //           confetti();
+  //           setWinner(newWinner);
+  //         } else if (checkEndGame(newBoard)) {
+  //           setWinner(false);
+  //         }
+  //         break;
+  //       }
+  //     }
+  //   } else {
+  //     if (board[index] || winner) return; // si existe algo en el casillero que marcamos, RETURN
+  //     const newBoard = [...board];
+  //     newBoard[index] = turn;
+  //     setBoard(newBoard);
+
+  //     const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X;
+  //     if (newTurn) {
+  //       setTimeLeft(timer);
+  //     }
+  //     setTurn(newTurn);
+  //     // guardar partida:
+  //     saveGameToStorage({ board: newBoard, turn: newTurn, mode: boardSize });
+
+  //     // revisar si tenemos ganador:
+  //     const newWinner = checkWinner(newBoard, boardSize.size);
+  //     if (newWinner) {
+  //       confetti();
+  //       setWinner(newWinner);
+  //     } else if (checkEndGame(newBoard)) {
+  //       setWinner(false);
+  //     }
+  //   }
+  // };
 
   const resetGame = () => {
     setBoard(Array(boardSize.size).fill(null));
@@ -109,75 +113,71 @@ function App() {
     setTimeLeft(timer);
   };
 
-
+ 
   const handleChange = (e) => {
     e.preventDefault()
     const values = e.target.value;
     const lastLetter = values[values.length - 1];
-    // if(values ==="" || values === " "){
-    //   e.preventDefault()
+    const index = getkeyBoard({lastLetter,boardSize})
+    updateBoard(index)
+    // if(lastLetter === "") return
+    // const keysEnabled = boardSize?.size === 9 ? "123456789qweasdzxcuiojklnm," : "12345678"
+    // if (keysEnabled.includes(lastLetter)) {
+    //   const key = e.target.value.toLowerCase();
+    //   let value;
 
+    //   switch (lastLetter) {
+    //     case "1":
+    //     case "q":
+    //     case "u":
+    //       value = 1;
+    //       break;
+    //     case "2":
+    //     case "w":
+    //     case "i":
+    //       value = 2;
+    //       break;
+    //     case "3":
+    //     case "e":
+    //     case "o":
+    //       value = 3;
+    //       break;
+    //     case "4":
+    //     case "a":
+    //     case "j":
+    //       value = 4;
+    //       break;
+    //     case "5":
+    //     case "s":
+    //     case "k":
+    //       value = 5;
+    //       break;
+    //     case "6":
+    //     case "d":
+    //     case "l":
+    //       value = 6;
+    //       break;
+    //     case "7":
+    //     case "z":
+    //     case "n":
+    //       value = 7;
+    //       break;
+    //     case "8":
+    //     case "x":
+    //     case "m":
+    //       value = 8;
+    //       break;
+    //     case "9":
+    //     case "c":
+    //     case ",":
+    //       value = 9;
+    //       break;
+    //     default:
+    //       value = null;
+    //       break;
+    //   }
+    //   updateBoard(value - 1);
     // }
-    if(lastLetter === "") return
-    const keysEnabled = boardSize?.size === 9 ? "123456789qweasdzxcuiojklnm," : "12345678"
-    if (keysEnabled.includes(lastLetter)) {
-      const key = e.target.value.toLowerCase();
-      let value;
-
-      switch (lastLetter) {
-        case "1":
-        case "q":
-        case "u":
-          value = 1;
-          break;
-        case "2":
-        case "w":
-        case "i":
-          value = 2;
-          break;
-        case "3":
-        case "e":
-        case "o":
-          value = 3;
-          break;
-        case "4":
-        case "a":
-        case "j":
-          value = 4;
-          break;
-        case "5":
-        case "s":
-        case "k":
-          value = 5;
-          break;
-        case "6":
-        case "d":
-        case "l":
-          value = 6;
-          break;
-        case "7":
-        case "z":
-        case "n":
-          value = 7;
-          break;
-        case "8":
-        case "x":
-        case "m":
-          value = 8;
-          break;
-        case "9":
-        case "c":
-        case ",":
-          value = 9;
-          break;
-        default:
-          value = null;
-          break;
-      }
-      updateBoard(value - 1);
-    }
-
-    // ------
   };
 
   const handleSubmit =(e)=>{
@@ -188,7 +188,7 @@ function App() {
     <main className="board">
       <h1>Ta-te-ti</h1>
       <div className="container-setting">
-        <SelectMode setboardSize={setboardSize} setBoard={setBoard} />
+        <SelectGame setboardSize={setboardSize} setBoard={setBoard} />
         <Timer timeLeft={timeLeft} setTimer={setTimer}  classTime={classTime}/>
       </div>
       <button onClick={resetGame}>Resetear el juego</button>
