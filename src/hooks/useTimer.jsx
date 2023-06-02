@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { TURNS } from "../constants";
 import { useBoardActions } from "../store/store/useBoardAction";
 import { useAppSelector } from "../store/store/store";
+import confetti from "canvas-confetti";
 
-export function useTimer({board, setWinner,winner, turn}) {
+
+export function useTimer() {
   const state = useAppSelector((state) => state.tateti)
 
-  const {newWinner, newTimmer, newTimeLeft} = useBoardActions();
+  const {newWinner: updateWinner, newTimmer, newTimeLeft} = useBoardActions();
 
     const [timer , setTimer ] = useState(8)
     const [timeLeft, setTimeLeft] = useState(timer)
@@ -14,14 +16,15 @@ export function useTimer({board, setWinner,winner, turn}) {
 
     // TIMER logica
   useEffect(() => {
-    if(state.board?.includes(TURNS.X) || board?.includes(TURNS.O)){
+    if(state.board?.includes(TURNS.X) || state.board?.includes(TURNS.O)){
       if ( state.turn === TURNS.X && timeLeft <= 0.0) {
        // Lógica a ejecutar cuando se agota el tiempo
         // setWinner(TURNS.O)
-        newWinner(TURNS.O)
+        updateWinner(TURNS.O)
+      
       }else if( state.turn === TURNS.O && timeLeft <= 0.0){
         // setWinner(TURNS.X)
-        newWinner(TURNS.X)
+        updateWinner(TURNS.X)
       }
       
   
@@ -30,7 +33,7 @@ export function useTimer({board, setWinner,winner, turn}) {
         newTimeLeft(-0.1)
       }, 100);
 
-      if(winner !== null){
+      if(state.winner !== null){
         clearTimeout(timer)
       }
 
@@ -41,7 +44,21 @@ export function useTimer({board, setWinner,winner, turn}) {
  
   
   useEffect(() => {
- setTimeLeft(timer) 
+    if (state.winner) {
+      confetti();
+      // setWinner(newWinner);
+      updateWinner(state.winner)
+    } 
+    // else if (checkEndGame(newBoard)) {
+    //   // setWinner(false);
+    //   updateWinner(false)
+    // }
+  }, [state.winner])
+  
+
+
+  useEffect(() => {
+ setTimeLeft(state.timer) 
   }, [state.timer])
 
   useEffect(() => {

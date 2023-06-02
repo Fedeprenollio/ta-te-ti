@@ -46,14 +46,9 @@ console.log("REDUZ", state)
   });
   // null es que no hay ganador, false es que hay empate
   const [winner, setWinner] = useState(null);
-  const { timer, setTimer, timeLeft, setTimeLeft,classTime } = useTimer({
-    board,
-    setWinner,
-    winner,
-    turn
-  });
+  const { timer, setTimer, timeLeft, setTimeLeft,classTime } = useTimer();
 
-  const {updateBoard} = useUpdateBoard({UpdateTurn ,board, setBoard, turn, setTurn, winner, setWinner, boardSize, timer, setTimeLeft, saveGameToStorage, checkWinner, checkEndGame, confetti});
+  const {updateBoard} = useUpdateBoard({ winner, setWinner, boardSize, timer, setTimeLeft, saveGameToStorage, checkWinner, checkEndGame, confetti});
 
   // const updateBoard = (index) => {
   //   if (boardSize.size === 42) {
@@ -201,7 +196,7 @@ console.log("REDUZ", state)
     <main className="board">
       <h1>Ta-te-ti</h1>
       <div className="container-setting">
-        <SelectGame setboardSize={setboardSize} setBoard={setBoard} />
+        <SelectGame />
         <Timer timeLeft={timeLeft} setTimer={setTimer}  classTime={classTime}/>
       </div>
       <button onClick={resetGame}>Resetear el juego</button>
@@ -225,8 +220,8 @@ console.log("REDUZ", state)
         </form>
       </section>
       <section className="turn">
-        <Square isSelected={turn === TURNS.X}>{TURNS.X}</Square>
-        <Square isSelected={turn === TURNS.O}>{TURNS.O}</Square>
+        <Square isSelected={state.turn === TURNS.X}>{TURNS.X}</Square>
+        <Square isSelected={state.turn === TURNS.O}>{TURNS.O}</Square>
       </section>
 
     <section>

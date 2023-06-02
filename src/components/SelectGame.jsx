@@ -1,7 +1,7 @@
 import React from "react";
 import { useBoardActions } from "../store/store/useBoardAction";
 
-export const SelectGame = ({ setboardSize, setBoard }) => {
+export const SelectGame = () => {
   const { setSetting ,setBoard:updateDashboard } = useBoardActions();
   const handleMode = (e) => {
     e.preventDefault();

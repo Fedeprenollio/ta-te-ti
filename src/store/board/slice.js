@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { TURNS } from "../../constants";
 
 const initialState = {
-  turn: "X",
+  turn: TURNS.X,
   winner: null,
   timer: 8,
   timeLeft: null,
@@ -48,7 +49,7 @@ const tatetiSlice = createSlice({
     resetGame: (state) => {
       //s
 
-      state.turn = "X";
+      state.turn =TURNS.X;
       state.winner = null;
       state.timer = 8;
       state.timeLeft = null;
@@ -57,7 +58,7 @@ const tatetiSlice = createSlice({
     //     grid: 6 * 7,
     //     classNameGrid: "board6x7",
     //   };
-      state.board = Array(42).fill(null);
+      // state.board = Array(42).fill(null);
       //S
     },
   },
