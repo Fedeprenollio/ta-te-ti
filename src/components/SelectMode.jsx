@@ -25,7 +25,7 @@ export const SelectMode = ({ setboardSize, setBoard }) => {
 
   return (
     <form action='' onSubmit={handleMode} className='form-mode'>
-      <label htmlFor='mode'>Selecciona un modo:</label>
+      <label htmlFor='mode'>Selecciona un game:</label>
       <div>
         <select name='mode' id='mode'>
           <option value='tateti'>Ta-te-ti</option>
