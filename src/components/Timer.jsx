@@ -1,6 +1,11 @@
 import React, { useState } from "react";
+import { useBoardActions } from "../store/store/useBoardAction";
+import { useAppSelector } from "../store/store/store";
 
 export const Timer = ({ timeLeft, setTimer, classTime }) => {
+  const state = useAppSelector((state) => state.tateti)
+
+  const  {newTimer,newTimeLeft} = useBoardActions()
   const [error, setError] = useState(false);
 
   const handleTimer = (e) => {
@@ -14,6 +19,7 @@ export const Timer = ({ timeLeft, setTimer, classTime }) => {
       const seconds = parseInt(timer, 10); // Convertir a entero si es necesario
       // Realiza las operaciones necesarias con el valor numérico
       setTimer(seconds);
+      newTimer( seconds)
     } else {
       // El valor no es un número válido
       setError("Debes ingresar números unicamente");

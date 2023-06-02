@@ -1,4 +1,11 @@
+import { useAppSelector } from "../store/store/store";
+import { useBoardActions } from "../store/store/useBoardAction";
+
 const Square = ({ children, isSelected, updateBoard, index, boardSize }) => {
+  const state = useAppSelector((state) => state.tateti)
+
+  const  {setBoard} = useBoardActions()
+
   const className = `square container-key ${isSelected ? "is-selected" : ""}`;
   const handleClick = () => {
     updateBoard(index);
@@ -99,7 +106,7 @@ const Square = ({ children, isSelected, updateBoard, index, boardSize }) => {
     <div onClick={handleClick} className={className}>
       {children}
       {/* <span className="key">{index + 1}</span> */}
-      {boardSize?.size === 9 ? <KeyBoardKeyTateti /> : <KeyBoard4InLine />}
+      {state.setting?.size === 9 ? <KeyBoardKeyTateti /> : <KeyBoard4InLine />}
     </div>
   );
 };

@@ -13,8 +13,16 @@ import { SelectGame } from "./components/SelectGame";
 import { FormOnlineGame } from "./components/FormOnlineGame";
 import { useUpdateBoard } from "./hooks/useUpdateBoard";
 import { getkeyBoard } from "./logic/getKeyBoard";
+import { useAppSelector } from "./store/store/store";
+import { useBoardActions } from "./store/store/useBoardAction";
 
 function App() {
+  const state = useAppSelector((state) => state.tateti)
+  const {setTurn: UpdateTurn, newWinner,reserGame,  setBoard: updateDashboard } = useBoardActions()
+console.log("REDUZ", state)
+
+
+
   const [boardSize, setboardSize] = useState(()=>{
     const boardSizeFromLocalStorage = window.localStorage.getItem("mode");
     return boardSizeFromLocalStorage ? JSON.parse(boardSizeFromLocalStorage) : {
@@ -45,7 +53,7 @@ function App() {
     turn
   });
 
-  const {updateBoard} = useUpdateBoard({board, setBoard, turn, setTurn, winner, setWinner, boardSize, timer, setTimeLeft, saveGameToStorage, checkWinner, checkEndGame, confetti});
+  const {updateBoard} = useUpdateBoard({UpdateTurn ,board, setBoard, turn, setTurn, winner, setWinner, boardSize, timer, setTimeLeft, saveGameToStorage, checkWinner, checkEndGame, confetti});
 
   // const updateBoard = (index) => {
   //   if (boardSize.size === 42) {
@@ -103,14 +111,18 @@ function App() {
   //     }
   //   }
   // };
-
   const resetGame = () => {
-    setBoard(Array(boardSize.size).fill(null));
+    reserGame()
+    // setBoard(Array(boardSize.size).fill(null));
+    updateDashboard(Array(state.setting.size).fill(null))
     // TODO: HACER Q EL SIGUIENTE ES EL QUE GANo
-    setTurn(TURNS.X);
-    setWinner(null);
+    // setTurn(TURNS.X); /// old
+    // const newTurn= TURNS.X
+    // UpdateTurn({newTurn})
+    // setWinner(null);
+    // newWinner(null)
     resetGameToStorage();
-    setTimeLeft(timer);
+    setTimeLeft(state.timer);
   };
 
  
@@ -118,7 +130,8 @@ function App() {
     e.preventDefault()
     const values = e.target.value;
     const lastLetter = values[values.length - 1];
-    const index = getkeyBoard({lastLetter,boardSize})
+    const size = state.setting.size
+    const index = getkeyBoard({lastLetter, size})
     updateBoard(index)
     // if(lastLetter === "") return
     // const keysEnabled = boardSize?.size === 9 ? "123456789qweasdzxcuiojklnm," : "12345678"
@@ -193,10 +206,10 @@ function App() {
       </div>
       <button onClick={resetGame}>Resetear el juego</button>
       <section className={`game ${boardSize.classNameGrid}`}>
-        {board.map((_, index) => {
+        {state.board.map((_, index) => {
           return (
             <Square key={index} index={index} updateBoard={updateBoard} boardSize={boardSize}>
-              {board[index]}
+              {state.board[index]}
             </Square>
           );
         })}

@@ -1,21 +1,35 @@
 import React from "react";
+import { useBoardActions } from "../store/store/useBoardAction";
 
 export const SelectGame = ({ setboardSize, setBoard }) => {
+  const { setSetting ,setBoard:updateDashboard } = useBoardActions();
   const handleMode = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const mode = formData.get("mode");
-    setBoard(Array(9).fill(null));
+    // setBoard(Array(9).fill(null));
+    updateDashboard(Array(9).fill(null))
     if (mode === "tateti") {
-      setboardSize({
+      // setboardSize({
+      //   size: 9,
+      //   grid: 3 * 3,
+      //   classNameGrid: "board3x3",
+      // });
+      setSetting({
         size: 9,
         grid: 3 * 3,
         classNameGrid: "board3x3",
       });
     } else if (mode === "4inline") {
-      setBoard(Array(42).fill(null));
+      // setBoard(Array(42).fill(null));
+      updateDashboard(Array(42).fill(null))
+      // setboardSize({
+      //   size: 42,
+      //   grid: 6 * 7,
+      //   classNameGrid: "board6x7",
+      // });
 
-      setboardSize({
+      setSetting({
         size: 42,
         grid: 6 * 7,
         classNameGrid: "board6x7",

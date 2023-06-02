@@ -1,10 +1,16 @@
 import { useState } from "react";
 import { TURNS } from "../constants";
+import { useBoardActions } from "../store/store/useBoardAction";
+import { useAppSelector } from "../store/store/store";
 
-export const useUpdateBoard = ({board, setBoard, turn, setTurn, winner, setWinner, boardSize, timer, setTimeLeft, saveGameToStorage, checkWinner, checkEndGame, confetti}) => {
- const updateBoard = (index) => {
-    console.log("USE UPDATE BOARD", index)
-    if (boardSize.size === 42) {
+export const useUpdateBoard = ({ UpdateTurn,board, setBoard, turn, setTurn, winner, setWinner, boardSize, timer, setTimeLeft, saveGameToStorage, checkWinner, checkEndGame, confetti}) => {
+  const state = useAppSelector((state) => state.tateti)
+
+  const { setBoard: updateDashboard ,newWinner:updateWinner } = useBoardActions();
+
+ 
+  const updateBoard = (index) => {
+    if (state.setting.size === 42) {
       const tablero = board;
       const columna = index % 7;
 
@@ -14,23 +20,28 @@ export const useUpdateBoard = ({board, setBoard, turn, setTurn, winner, setWinne
         if (tablero[posicion] === null) {
           const newBoard = [...board];
           newBoard[posicion] = turn;
-          setBoard(newBoard);
-          const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X;
-          console.log("Turnos", newTurn)
+          // setBoard(newBoard);
+          updateDashboard(newBoard)
+          
+          const newTurn = state.turn === TURNS.X ? TURNS.O : TURNS.X;
           if (newTurn) {
             setTimeLeft(timer);
           }
-          setTurn(newTurn);
+          // setTurn(newTurn);
+          UpdateTurn({newTurn})
+
           // guardar partida:
           saveGameToStorage({ board: newBoard, turn: newTurn, mode: boardSize });
 
           // revisar si tenemos ganador:
-          const newWinner = checkWinner(newBoard, boardSize.size);
+          const newWinner = checkWinner(newBoard, state.setting.size);
           if (newWinner) {
             confetti();
-            setWinner(newWinner);
+            // setWinner(newWinner);
+            updateWinner(newWinner)
           } else if (checkEndGame(newBoard)) {
-            setWinner(false);
+            // setWinner(false);
+            updateWinner(false)
           }
           break;
         }
@@ -39,23 +50,28 @@ export const useUpdateBoard = ({board, setBoard, turn, setTurn, winner, setWinne
       if (board[index] || winner) return; // si existe algo en el casillero que marcamos, RETURN
       const newBoard = [...board];
       newBoard[index] = turn;
-      setBoard(newBoard);
+      // setBoard(newBoard);
+      updateDashboard(newBoard)
 
-      const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X;
+      const newTurn = state.turn === TURNS.X ? TURNS.O : TURNS.X;
       if (newTurn) {
         setTimeLeft(timer);
       }
-      setTurn(newTurn);
+      // setTurn(newTurn);
+      UpdateTurn({newTurn})
       // guardar partida:
       saveGameToStorage({ board: newBoard, turn: newTurn, mode: boardSize });
 
       // revisar si tenemos ganador:
-      const newWinner = checkWinner(newBoard, boardSize.size);
+      const newWinner = checkWinner(newBoard, state.setting.size);
       if (newWinner) {
         confetti();
-        setWinner(newWinner);
+        // setWinner(newWinner);
+        updateWinner(newWinner)
+        
       } else if (checkEndGame(newBoard)) {
-        setWinner(false);
+        // setWinner(false);
+        updateWinner(false)
       }
     }
   };
