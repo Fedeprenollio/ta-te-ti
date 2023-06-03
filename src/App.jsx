@@ -15,40 +15,43 @@ import { useUpdateBoard } from "./hooks/useUpdateBoard";
 import { getkeyBoard } from "./logic/getKeyBoard";
 import { useAppSelector } from "./store/store/store";
 import { useBoardActions } from "./store/store/useBoardAction";
+import { SelectMode } from "./components/SelectMode";
 
 function App() {
-  const state = useAppSelector((state) => state.tateti)
-  const {setTurn: UpdateTurn, newWinner,reserGame,  setBoard: updateDashboard } = useBoardActions()
-console.log("REDUZ", state)
+  const state = useAppSelector((state) => state.tateti);
+  const { reserGame, setBoard: updateDashboard } = useBoardActions();
 
+  // const [boardSize, setboardSize] = useState(()=>{
+  //   const boardSizeFromLocalStorage = window.localStorage.getItem("mode");
+  //   return boardSizeFromLocalStorage ? JSON.parse(boardSizeFromLocalStorage) : {
+  //     size: 42,
+  //     grid: 6 * 7,
+  //     classNameGrid: "board6x7",
+  //   }
+  // });
 
+  // const [board, setBoard] = useState(() => {
+  //   const boardFromLocalStorage = window.localStorage.getItem("board");
+  //   console.log(boardFromLocalStorage)
+  //   return boardFromLocalStorage
+  //     ? JSON.parse(boardFromLocalStorage)
+  //     : Array(42).fill(null);
+  // });
 
-  const [boardSize, setboardSize] = useState(()=>{
-    const boardSizeFromLocalStorage = window.localStorage.getItem("mode");
-    return boardSizeFromLocalStorage ? JSON.parse(boardSizeFromLocalStorage) : {
-      size: 42,
-      grid: 6 * 7,
-      classNameGrid: "board6x7",
-    }
-  });
-
-  const [board, setBoard] = useState(() => {
-    const boardFromLocalStorage = window.localStorage.getItem("board");
-    console.log(boardFromLocalStorage)
-    return boardFromLocalStorage
-      ? JSON.parse(boardFromLocalStorage)
-      : Array(42).fill(null);
-  });
-
-  const [turn, setTurn] = useState(() => {
-    const turnFromLocalStorage = window.localStorage.getItem("turn");
-    return turnFromLocalStorage ?? TURNS.X;
-  });
+  // const [turn, setTurn] = useState(() => {
+  //   const turnFromLocalStorage = window.localStorage.getItem("turn");
+  //   return turnFromLocalStorage ?? TURNS.X;
+  // });
   // null es que no hay ganador, false es que hay empate
-  const [winner, setWinner] = useState(null);
-  const { timer, setTimer, timeLeft, setTimeLeft,classTime } = useTimer();
+  // const [winner, setWinner] = useState(null);
+  const { timeLeft, setTimeLeft, classTime } = useTimer();
 
-  const {updateBoard} = useUpdateBoard({ winner, setWinner, boardSize, timer, setTimeLeft, saveGameToStorage, checkWinner, checkEndGame, confetti});
+  const { updateBoard } = useUpdateBoard({
+    setTimeLeft,
+    checkWinner,
+    checkEndGame,
+    confetti,
+  });
 
   // const updateBoard = (index) => {
   //   if (boardSize.size === 42) {
@@ -107,27 +110,26 @@ console.log("REDUZ", state)
   //   }
   // };
   const resetGame = () => {
-    reserGame()
+    reserGame();
     // setBoard(Array(boardSize.size).fill(null));
-    updateDashboard(Array(state.setting.size).fill(null))
+    updateDashboard(Array(state.setting.size).fill(null));
     // TODO: HACER Q EL SIGUIENTE ES EL QUE GANo
     // setTurn(TURNS.X); /// old
     // const newTurn= TURNS.X
     // UpdateTurn({newTurn})
     // setWinner(null);
     // newWinner(null)
-    resetGameToStorage();
+    // resetGameToStorage();
     setTimeLeft(state.timer);
   };
 
- 
   const handleChange = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     const values = e.target.value;
     const lastLetter = values[values.length - 1];
-    const size = state.setting.size
-    const index = getkeyBoard({lastLetter, size})
-    updateBoard(index)
+    const size = state.setting.size;
+    const index = getkeyBoard({ lastLetter, boardSize: size });
+    updateBoard(index);
     // if(lastLetter === "") return
     // const keysEnabled = boardSize?.size === 9 ? "123456789qweasdzxcuiojklnm," : "12345678"
     // if (keysEnabled.includes(lastLetter)) {
@@ -188,47 +190,58 @@ console.log("REDUZ", state)
     // }
   };
 
-  const handleSubmit =(e)=>{
-    e.preventDefault()
-  }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
 
   return (
     <main className="board">
       <h1>Ta-te-ti</h1>
       <div className="container-setting">
         <SelectGame />
-        <Timer timeLeft={timeLeft} setTimer={setTimer}  classTime={classTime}/>
+        <Timer timeLeft={timeLeft} classTime={classTime} />
+        <SelectMode />
       </div>
-      <button onClick={resetGame}>Resetear el juego</button>
-      <section className={`game ${boardSize.classNameGrid}`}>
-        {state.board.map((_, index) => {
-          return (
-            <Square key={index} index={index} updateBoard={updateBoard} boardSize={boardSize}>
-              {state.board[index]}
-            </Square>
-          );
-        })}
-      </section>
-
-      <section>
-        <form onSubmit={handleSubmit} onChange={handleChange}>
-          <div  className="input-container">
-              <label htmlFor="keys">Tus teclas:</label>
-              <input type="text" id="keys" autoFocus placeholder="1 2 3 a s d..." />
-          </div>
-          <span>Alternate con tu amigo con el mouse o tecleando</span>
-        </form>
-      </section>
       <section className="turn">
         <Square isSelected={state.turn === TURNS.X}>{TURNS.X}</Square>
         <Square isSelected={state.turn === TURNS.O}>{TURNS.O}</Square>
       </section>
 
-    <section>
-      <FormOnlineGame boardSize={boardSize} updateBoard={updateBoard} turn={turn}/>
-    </section>
 
-      <WinnerModal winner={winner} resetGame={resetGame} />
+
+      <button onClick={resetGame}>Resetear el juego</button>
+      <section className={`game ${state.setting.classNameGrid}`}>
+        {state.board.map((_, index) => {
+          return (
+            <Square key={index} index={index} updateBoard={updateBoard}>
+              {state.board[index]}
+            </Square>
+          );
+        })}
+      </section>
+      {state.mode === "offline" && (
+        <section>
+          <form onSubmit={handleSubmit} onChange={handleChange}>
+            <div className="input-container">
+              <label htmlFor="keys">Tus teclas:</label>
+              <input
+                type="text"
+                id="keys"
+                autoFocus
+                placeholder="1 2 3 a s d..."
+              />
+            </div>
+            <span>Alternate con tu amigo con el mouse o tecleando</span>
+          </form>
+        </section>
+      )}
+
+   
+      <section>
+        <FormOnlineGame updateBoard={updateBoard} />
+      </section>
+
+      <WinnerModal resetGame={resetGame} />
     </main>
   );
 }

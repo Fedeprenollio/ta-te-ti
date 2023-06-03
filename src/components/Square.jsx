@@ -89,6 +89,7 @@ const Square = ({ children, isSelected, updateBoard, index, boardSize }) => {
             <span className="key-r">,</span>
           </div>
         );
+       
       default:
         break;
     }

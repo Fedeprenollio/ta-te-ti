@@ -4,8 +4,14 @@ import { useState } from "react";
 import { io } from "socket.io-client";
 import { TURNS } from "../constants";
 import { getkeyBoard } from "../logic/getKeyBoard";
+import { useAppSelector } from "../store/store/store";
+import { CreateRoom } from "./CreateRoom";
+import { useBoardActions } from "../store/store/useBoardAction";
 
-export const FormOnlineGame = ({ boardSize, updateBoard, turn }) => {
+export const FormOnlineGame = ({  updateBoard, turn }) => {
+  const state = useAppSelector((state) => state.tateti)
+  const {setBoard} = useBoardActions()
+  
   const [player, setPlayer] = useState(false);
 
   const [socket, setSocket] = useState(null);
@@ -15,11 +21,10 @@ export const FormOnlineGame = ({ boardSize, updateBoard, turn }) => {
   const [room, setRoom] = useState(1);
 
   function updateBoardOnline(index){
-    console.log("index online:;", index)
     if (index) {
       const values = index;
       const lastLetter = values[values?.length - 1];
-      const key = getkeyBoard({lastLetter,boardSize})
+      const key = getkeyBoard({lastLetter,boardSize : state.setting.size})
     updateBoard(key)
       // if (lastLetter === "") return;
 
@@ -84,58 +89,45 @@ export const FormOnlineGame = ({ boardSize, updateBoard, turn }) => {
     }
     // ------
   };
-  useEffect(() => {
-    // Conectar al servidor de Socket.IO
-    //https://backend-playroom.vercel.app/
-    //"http://localhost:3000"
-    const newSocket = io("https://play-room.onrender.com", {
-      query: {
-        code: room,
-      },
-    });
-    setSocket(newSocket);
-
-    // Manejar mensajes entrantes
-    newSocket.on("chat message", (message) => {
-      console.log("BOOLEANo", message.player === TURNS.O);
-
-      setMessages(message);
-    });
-
-    // Limpiar la conexión cuando el componente se desmonta
-    return () => {
-      newSocket.disconnect();
-    };
-  }, [room]);
+ 
   useEffect(() => {
     const lastLeter = messages?.jugada?.slice(-1);
+    // setBoard(messages.board)
     if(lastLeter){
       updateBoardOnline(lastLeter);
 
     }
+    // if(messages.board){
+    //   setBoard(messages.board)
+    // }
   }, [messages]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
   };
   const handleInputChange = (e) => {
-    if (turn !== player) return;
+    if (state.turn !== player) return;
     setInputValue(e.target.value);
     if (e.target.value.trim() !== "") {
       // Enviar el mensaje al servidor
-      socket.emit("chat message", { jugada: e.target.value, turn, player });
+      socket.emit("chat message", { jugada: e.target.value, turn, player , board:state.board});
 
       setInputValue("");
     }
-  };
-  const handleSubmitRoom = (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const room = formData.get("room");
-    setRoom(room);
-  };
 
-  
+    // e.preventDefault();
+    // const values = e.target.value;
+    // const lastLetter = values[values.length - 1];
+    // const size = state.setting.size;
+    // const index = getkeyBoard({ lastLetter, boardSize: size });
+    // console.log("index", index, size);
+    // updateBoard(index);
+  };
+  useEffect(() => {
+  socket?.emit("chat message", {  turn:state.turn, player , board:state.board});
+
+}, [state.board])
+
 
   const handleChange = (event) => {
     setPlayer(event.target.value);
@@ -148,14 +140,13 @@ export const FormOnlineGame = ({ boardSize, updateBoard, turn }) => {
     }
   };
 
-  console.log("nada", messages);
   useEffect(() => {
     if (player === false && messages.player === TURNS.O) {
       setPlayer(TURNS.X);
     } else if (player === false && messages.player === TURNS.X) {
       setPlayer(TURNS.O);
     }
-  }, [messages.player]);
+  }, [messages]);
 
   return (
     <div>
@@ -206,14 +197,13 @@ export const FormOnlineGame = ({ boardSize, updateBoard, turn }) => {
           checked={player === TURNS.O}
           onChange={handleChange}
         />
+  const [room, setRoom] = useState(null)
+  const [socket, setSocket] = useState(null)
+
       </label> */}
       </div>
 
-      <form onSubmit={handleSubmitRoom}>
-        <input type="text" name="room" />
-        <button type="submit">Codigo de la sala privada</button>
-      </form>
-      <button onClick={() => setMessages(false)}></button>
+     <CreateRoom room={room} setRoom={ setRoom} setSocket={setSocket} setMessages={setMessages} socket={socket}/>
     </div>
   );
 };

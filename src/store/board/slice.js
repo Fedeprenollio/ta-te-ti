@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { TURNS } from "../../constants";
 
-const initialState = {
+const DEFAULT_STATE = {
   turn: TURNS.X,
   winner: null,
   timer: 8,
@@ -12,9 +12,20 @@ const initialState = {
     classNameGrid: "board6x7",
   },
   board: Array(42).fill(null),
+  mode: "offline",
+  createdRoom: 0,
+  webSocket: 0,
+  name:"",
+  messages:[]
+
+
 };
 
-initialState.timeLeft = initialState.timer;
+// initialState.timeLeft = initialState.timer;
+const initialState = (() => {
+	const persistedState = localStorage.getItem("__redux__state__");
+	return persistedState ? JSON.parse(persistedState).tateti : DEFAULT_STATE;
+})();
 
 const tatetiSlice = createSlice({
   name: "tateti",
@@ -47,23 +58,42 @@ const tatetiSlice = createSlice({
       state.timeLeft = newTimeLeft;
     },
     resetGame: (state) => {
-      //s
-
       state.turn =TURNS.X;
       state.winner = null;
-      state.timer = 8;
       state.timeLeft = null;
-    //   state.setting = {
-    //     size: 42,
-    //     grid: 6 * 7,
-    //     classNameGrid: "board6x7",
-    //   };
-      // state.board = Array(42).fill(null);
-      //S
     },
+    updateMode: (state, action)=>{
+      const {newMode}= action.payload
+      state.mode = newMode
+    },
+    updateRoom: (state,action)=>{
+      const {room} = action.payload
+      state.room = room
+    },
+    updateIsCreatedRoom: (state,action)=>{
+      console.log(action.payload)
+      const {isNewRoom} = action.payload
+      state.createdRoom = isNewRoom
+    },
+    updateName: (state,action)=>{
+      const {name} = action.payload
+      state.name = name
+    },
+    updateMessages: (state,action)=>{
+      const {message, name} = action.payload
+      console.log("message slice:::", {message, name})
+      console.log(state)
+      state.messages = [... state.messages, message]
+      // return {
+      //   ...state,
+      //   messages: state.messages.concat(message),
+      // };
+    },
+    deleteMessages: (state)=>{
+      state.messages= []
+    }
   },
 });
-
 export const {
   updateTurn,
   updateSetting,
@@ -72,5 +102,11 @@ export const {
   resetGame,
   updateTimer,
   updateTimeLeft,
+  updateMode,
+  updateRoom,
+  updateIsCreatedRoom,
+  updateName,
+  updateMessages,
+  deleteMessages
 } = tatetiSlice.actions;
 export default tatetiSlice.reducer;

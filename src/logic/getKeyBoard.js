@@ -1,6 +1,6 @@
 export  function getkeyBoard({lastLetter,boardSize}) {
     if(lastLetter === "") return
-    const keysEnabled = boardSize?.size === 9 ? "123456789qweasdzxcuiojklnm," : "12345678"
+    const keysEnabled = boardSize === 9 ? "123456789qweasdzxcuiojklnm," : "1234567"
     let value;
     if (keysEnabled.includes(lastLetter)) {
     //   const key = e.target.value.toLowerCase();

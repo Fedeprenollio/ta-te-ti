@@ -1,7 +1,6 @@
 import { WINNER_COMBOS, WINNER_COMBOS6x7 } from '../constants'
 
 export const checkWinner = (boardToCheck, boardSize) => {
-  console.log("CHECKEEANDO WINNER", boardToCheck, boardSize)
   if(boardSize === 9){
   for (const combo of WINNER_COMBOS) {
     const [a, b, c] = combo

@@ -2,28 +2,38 @@ import React, { useState } from "react";
 import { useBoardActions } from "../store/store/useBoardAction";
 import { useAppSelector } from "../store/store/store";
 
-export const Timer = ({ timeLeft, setTimer, classTime }) => {
+export const Timer = ({ timeLeft, classTime }) => {
   const state = useAppSelector((state) => state.tateti)
 
-  const  {newTimer,newTimeLeft} = useBoardActions()
+  const  {newTimer} = useBoardActions()
   const [error, setError] = useState(false);
 
   const handleTimer = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const timer = formData.get("timer");
-    // Validar que el valor sea un número
-    if (!isNaN(timer) && timer !== "") {
+    
+    // Validar que el valor sea un número:
+    const isTimerValid = /^[1-9]\d*$/.test(timer);
+    if(isTimerValid){
       setError(false);
       // El valor es un número válido
       const seconds = parseInt(timer, 10); // Convertir a entero si es necesario
       // Realiza las operaciones necesarias con el valor numérico
-      setTimer(seconds);
+      // setTimer(seconds);
       newTimer( seconds)
-    } else {
-      // El valor no es un número válido
-      setError("Debes ingresar números unicamente");
+    }else {
+      setError("El tiempo debe ser un número positivo y sin decimales")
     }
+
+    // if (!isNaN(timer) && timer !== "") {
+    //   setError(false);
+    //   // El valor es un número válido
+    //   const seconds = parseInt(timer, 10); // Convertir a entero si es necesario
+    //   // Realiza las operaciones necesarias con el valor numérico
+    //   // setTimer(seconds);
+    //   newTimer( seconds)
+    // } 
   };
   return (
     <div>

@@ -1,6 +1,10 @@
+import { useAppSelector } from '../store/store/store'
+import { useBoardActions } from '../store/store/useBoardAction'
 import Square from './Square'
 
-export const WinnerModal = ({ winner, resetGame }) => {
+export const WinnerModal = ({resetGame}) => {
+  const {winner} = useAppSelector((state) => state.tateti)
+  
   if (winner === null) return
 
   const winnerText = winner === false ? 'Empate' : 'Gano:'

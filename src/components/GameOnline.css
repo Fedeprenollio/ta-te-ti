@@ -1,0 +1,20 @@
+/* Estilos para mensajes propios */
+.own {
+    background-color: lightblue;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 10px;
+    text-align: end;
+    color: black;
+  }
+  
+  /* Estilos para mensajes ajenos */
+  .rival {
+    background-color: lightgray;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 10px;
+    text-align: start;
+    color: black;
+  }
+  
