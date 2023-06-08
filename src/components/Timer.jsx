@@ -38,7 +38,7 @@ export const Timer = ({ timeLeft, classTime }) => {
   return (
     <div>
       <div>
-        <form onSubmit={handleTimer} className="container-form">
+        <form onSubmit={handleTimer} className="container-form text-slate-500">
           <label htmlFor="timer">Tiempo:</label>
           <div>
             <div style={{display:"flex", alignItems:"center"}}>

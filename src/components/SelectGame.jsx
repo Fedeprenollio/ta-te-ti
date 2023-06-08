@@ -1,8 +1,11 @@
 import React from "react";
 import { useBoardActions } from "../store/store/useBoardAction";
+import { SelectBox, SelectBoxItem } from "@tremor/react";
+
 
 export const SelectGame = () => {
   const { setSetting ,setBoard:updateDashboard } = useBoardActions();
+
   const handleMode = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -38,9 +41,10 @@ export const SelectGame = () => {
   };
 
   return (
-    <form action="" onSubmit={handleMode} className="form-mode">
+    
+    <form action="" onSubmit={handleMode} className="form-mode text-slate-500">
       <label htmlFor="mode">Selecciona un juego:</label>
-      <div>
+      <div >
         <select name="mode" id="mode">
           <option value="tateti">Ta-te-ti</option>
           <option value="4inline">4 en linea</option>
@@ -48,5 +52,8 @@ export const SelectGame = () => {
         <button className="btn">Cambiar</button>
       </div>
     </form>
+
+
+  
   );
 };

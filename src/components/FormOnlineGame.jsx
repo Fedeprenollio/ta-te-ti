@@ -7,25 +7,27 @@ import { getkeyBoard } from "../logic/getKeyBoard";
 import { useAppSelector } from "../store/store/store";
 import { CreateRoom } from "./CreateRoom";
 import { useBoardActions } from "../store/store/useBoardAction";
+import ChatComponent from "./chat/ChatComponent";
+import { SelectSymbols } from "./chat/SelectSymbols";
 
-export const FormOnlineGame = ({  updateBoard, turn }) => {
-  const state = useAppSelector((state) => state.tateti)
-  const {setBoard} = useBoardActions()
-  
-  const [player, setPlayer] = useState(false);
+export const FormOnlineGame = ({ updateBoard, turn, socket, setSocket, player, setPlayer }) => {
+  const state = useAppSelector((state) => state.tateti);
+  const { setBoard } = useBoardActions();
 
-  const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState("");
-  console.log("los mnks", messages);
   const [inputValue, setInputValue] = useState("");
-  const [room, setRoom] = useState(1);
+  const [room, setRoom] = useState(false);
+  const [name, setName] = useState();
+  const [totalInRoom, setTotalInRoom] = useState(0);
+  const [isSpectator, setIsSpectator] = useState(false);
+  const [memberNames, setMemberNames] = useState([]);
 
-  function updateBoardOnline(index){
+  function updateBoardOnline(index) {
     if (index) {
       const values = index;
       const lastLetter = values[values?.length - 1];
-      const key = getkeyBoard({lastLetter,boardSize : state.setting.size})
-    updateBoard(key)
+      const key = getkeyBoard({ lastLetter, boardSize: state.setting.size });
+      updateBoard(key);
       // if (lastLetter === "") return;
 
       // const keysEnabled =
@@ -88,14 +90,14 @@ export const FormOnlineGame = ({  updateBoard, turn }) => {
       // }
     }
     // ------
-  };
- 
+  }
+
   useEffect(() => {
     const lastLeter = messages?.jugada?.slice(-1);
+    console.log("QUE LLEGA COMO MNJ", messages.jugada, lastLeter)
     // setBoard(messages.board)
-    if(lastLeter){
+    if (lastLeter) {
       updateBoardOnline(lastLeter);
-
     }
     // if(messages.board){
     //   setBoard(messages.board)
@@ -106,11 +108,65 @@ export const FormOnlineGame = ({  updateBoard, turn }) => {
     e.preventDefault();
   };
   const handleInputChange = (e) => {
+    //CONTROL JUEGO ONLINE
+    if (isSpectator.status === "Espectador") {
+      return;
+    }
+
+    if (!socket) {
+      alert("Debes crear o unirte a una sala");
+    }
+    if (isSpectator.status === "Espectador") {
+      return;
+    }
+
+    if (memberNames.length <= 1) {
+      alert("Esperando mas jugadores");
+      return;
+    }
+    console.log("LISTA DE PLAYER", memberNames);
+    const countX = memberNames.reduce((count, member) => {
+      if (member.symbol === TURNS.X) {
+        return count + 1;
+      }
+      return count;
+    }, 0);
+    const countO = memberNames.reduce((count, member) => {
+      if (member.symbol === TURNS.O) {
+        return count + 1;
+      }
+      return count;
+    }, 0);
+    if (countO === 1 && countX === 1) {
+      console.log("PARTIDA EN MARCHA");
+    } else {
+      alert("Tienes demasiados jugadores con X o O");
+      return;
+    }
+
+    const countReady = memberNames.reduce((count, member) => {
+      if (member.ready === true) {
+        return count + 1;
+      }
+      return count;
+    }, 0);
+    if (countReady === 2) {
+    } else {
+      alert("1 o mas jugadores no estan listos");
+      return;
+    }
+
+    //JUEGO ONLINE
     if (state.turn !== player) return;
     setInputValue(e.target.value);
     if (e.target.value.trim() !== "") {
       // Enviar el mensaje al servidor
-      socket.emit("chat message", { jugada: e.target.value, turn, player , board:state.board});
+      socket.emit("chat message", {
+        jugada: e.target.value,
+        turn,
+        player,
+        board: state.board,
+      });
 
       setInputValue("");
     }
@@ -123,30 +179,88 @@ export const FormOnlineGame = ({  updateBoard, turn }) => {
     // console.log("index", index, size);
     // updateBoard(index);
   };
-  useEffect(() => {
-  socket?.emit("chat message", {  turn:state.turn, player , board:state.board});
 
-}, [state.board])
 
+  //TODO: EN TEORIA ESTE USE EFECT NO ES NECESARIO
+  // useEffect(() => {
+  //   socket?.emit("chat message", {
+  //     turn: state.turn,
+  //     player,
+  //     board: state.board,
+  //   });
+  // }, [state.board]);
 
   const handleChange = (event) => {
-    setPlayer(event.target.value);
-    if (event.target.value) {
-      socket.emit("chat message", {
-        jugada: null,
-        turn: null,
-        player: event.target.value,
-      });
-    }
+    console.log("STATUS DE JUEGO", isSpectator);
+    // if(!socket){
+    //   alert("Debes crear o unirte a una sala")
+    // }
+    // if(isSpectator.status === "Espectador"){
+    //  console.log("NO DEBO SELECCIONAR FICHAS")
+    //   return
+    // }
+
+    // if(memberNames.length <=1){
+    //   console.log("ESPERANDO POR MAS JUGADORES")
+    //   alert("Esperando mas jugadores")
+    //   return
+    // }
+    // console.log("LISTA DE PLAYER", memberNames)
+    // const countX = memberNames.reduce((count, member) => {
+    //   if (member.symbol === TURNS.X) {
+    //     return count + 1;
+    //   }
+    //   return count;
+    // }, 0);
+    // const countO = memberNames.reduce((count, member) => {
+    //   if (member.symbol === TURNS.O) {
+    //     return count + 1;
+    //   }
+    //   return count;
+    // }, 0);
+    // if( countO === 1 && countX === 1){
+    //   alert("PODEMOS JUG")
+    // }else{
+    //   console.log(countO, countX)
+    //   alert("Tienes demasiados jugadores con X o O")
+    //   return
+    // }
+
+    // if(event.target.value === "-"){
+    //   console.log("RESETEO FICHAS")
+    //   setPlayer(false)
+    //   socket.emit("chat message", {
+    //     jugada: null,
+    //     turn: null,
+    //     player: false,
+    //   });
+    //   return
+    // }else {
+
+    //   setPlayer(event.target.value);
+    //   socket.emit("chat message", {
+    //     jugada: null,
+    //     turn: null,
+    //     player: event.target.value,
+    //   });
+    // }
   };
 
-  useEffect(() => {
-    if (player === false && messages.player === TURNS.O) {
-      setPlayer(TURNS.X);
-    } else if (player === false && messages.player === TURNS.X) {
-      setPlayer(TURNS.O);
-    }
-  }, [messages]);
+  // useEffect(() => {
+  //   if(isSpectator.status ==="Espectador") return
+  //   if (player === false && messages.player === TURNS.O) {
+  //     console.log("MI RIVAL ELIGIO REDONDAs")
+
+  //     setPlayer(TURNS.X);
+  //   } else if (player === false && messages.player === TURNS.X) {
+
+  //     console.log("MI RIVAL HA ELEGIDO X")
+  //     setPlayer(TURNS.O);
+  //   }else if(messages.player === false){
+  //     console.log("EL RIVAL PIDE CAMBIO DE FICHAS")
+  //     setPlayer(false)
+  //   }
+  // }, [messages.player]);
 
   return (
     <div>
@@ -164,7 +278,7 @@ export const FormOnlineGame = ({  updateBoard, turn }) => {
         <button type="submit">Jugar</button>
       </form>
 
-      <div>
+      {/* <div>
         <label>
           {TURNS.X}
           <input
@@ -188,22 +302,49 @@ export const FormOnlineGame = ({  updateBoard, turn }) => {
             onChange={handleChange}
           />
         </label>
-        {/* <label>
-       Recetear:
+
+
+        <label>
+       Resetear:
         <input
           type="radio"
           name="jugador"
           value={"-"}
-          checked={player === TURNS.O}
+          checked={player === false}
           onChange={handleChange}
         />
-  const [room, setRoom] = useState(null)
-  const [socket, setSocket] = useState(null)
+ 
 
-      </label> */}
-      </div>
+      </label>
+      </div> */}
 
-     <CreateRoom room={room} setRoom={ setRoom} setSocket={setSocket} setMessages={setMessages} socket={socket}/>
+      <CreateRoom
+        memberNames={memberNames}
+        setMemberNames={setMemberNames}
+        setIsSpectator={setIsSpectator}
+        totalInRoom={totalInRoom}
+        setTotalInRoom={setTotalInRoom}
+        room={room}
+        setRoom={setRoom}
+        setSocket={setSocket}
+        setMessages={setMessages}
+        socket={socket}
+        name={name}
+        setName={setName}
+      />
+      <ChatComponent
+        player={player}
+        setPlayer={setPlayer}
+        isSpectator={isSpectator}
+        setIsSpectator={setIsSpectator}
+        memberNames={memberNames}
+        setMemberNames={setMemberNames}
+        socket={socket}
+        name={name}
+        totalInRoom={totalInRoom}
+        setTotalInRoom={setTotalInRoom}
+      />
+      {/* <SelectSymbols socket={socket} /> */}
     </div>
   );
 };

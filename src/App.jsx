@@ -45,6 +45,10 @@ function App() {
   // null es que no hay ganador, false es que hay empate
   // const [winner, setWinner] = useState(null);
   const { timeLeft, setTimeLeft, classTime } = useTimer();
+  const [mouseKey, setMouseKey] = useState()
+  const [socket, setSocket] = useState(null);
+  const [player, setPlayer] = useState(false);
+
 
   const { updateBoard } = useUpdateBoard({
     setTimeLeft,
@@ -130,64 +134,7 @@ function App() {
     const size = state.setting.size;
     const index = getkeyBoard({ lastLetter, boardSize: size });
     updateBoard(index);
-    // if(lastLetter === "") return
-    // const keysEnabled = boardSize?.size === 9 ? "123456789qweasdzxcuiojklnm," : "12345678"
-    // if (keysEnabled.includes(lastLetter)) {
-    //   const key = e.target.value.toLowerCase();
-    //   let value;
-
-    //   switch (lastLetter) {
-    //     case "1":
-    //     case "q":
-    //     case "u":
-    //       value = 1;
-    //       break;
-    //     case "2":
-    //     case "w":
-    //     case "i":
-    //       value = 2;
-    //       break;
-    //     case "3":
-    //     case "e":
-    //     case "o":
-    //       value = 3;
-    //       break;
-    //     case "4":
-    //     case "a":
-    //     case "j":
-    //       value = 4;
-    //       break;
-    //     case "5":
-    //     case "s":
-    //     case "k":
-    //       value = 5;
-    //       break;
-    //     case "6":
-    //     case "d":
-    //     case "l":
-    //       value = 6;
-    //       break;
-    //     case "7":
-    //     case "z":
-    //     case "n":
-    //       value = 7;
-    //       break;
-    //     case "8":
-    //     case "x":
-    //     case "m":
-    //       value = 8;
-    //       break;
-    //     case "9":
-    //     case "c":
-    //     case ",":
-    //       value = 9;
-    //       break;
-    //     default:
-    //       value = null;
-    //       break;
-    //   }
-    //   updateBoard(value - 1);
-    // }
+   
   };
 
   const handleSubmit = (e) => {
@@ -207,19 +154,17 @@ function App() {
         <Square isSelected={state.turn === TURNS.O}>{TURNS.O}</Square>
       </section>
 
-
-
       <button onClick={resetGame}>Resetear el juego</button>
       <section className={`game ${state.setting.classNameGrid}`}>
         {state.board.map((_, index) => {
           return (
-            <Square key={index} index={index} updateBoard={updateBoard}>
+            <Square key={index} index={index} updateBoard={updateBoard} setMouseKey={setMouseKey} socket={socket} player={player}>
               {state.board[index]}
             </Square>
           );
         })}
       </section>
-      {state.mode === "offline" && (
+      {state.mode === "offline" ? (
         <section>
           <form onSubmit={handleSubmit} onChange={handleChange}>
             <div className="input-container">
@@ -234,12 +179,11 @@ function App() {
             <span>Alternate con tu amigo con el mouse o tecleando</span>
           </form>
         </section>
+      ) : (
+        <section>
+          <FormOnlineGame player={player} setPlayer={setPlayer} socket={socket} setSocket={setSocket} updateBoard={updateBoard} mouseKey={mouseKey} />
+        </section>
       )}
-
-   
-      <section>
-        <FormOnlineGame updateBoard={updateBoard} />
-      </section>
 
       <WinnerModal resetGame={resetGame} />
     </main>

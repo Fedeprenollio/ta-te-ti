@@ -71,7 +71,6 @@ const tatetiSlice = createSlice({
       state.room = room
     },
     updateIsCreatedRoom: (state,action)=>{
-      console.log(action.payload)
       const {isNewRoom} = action.payload
       state.createdRoom = isNewRoom
     },
@@ -81,8 +80,6 @@ const tatetiSlice = createSlice({
     },
     updateMessages: (state,action)=>{
       const {message, name} = action.payload
-      console.log("message slice:::", {message, name})
-      console.log(state)
       state.messages = [... state.messages, message]
       // return {
       //   ...state,

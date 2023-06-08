@@ -1,15 +1,34 @@
 import { useAppSelector } from "../store/store/store";
 import { useBoardActions } from "../store/store/useBoardAction";
 
-const Square = ({ children, isSelected, updateBoard, index, boardSize }) => {
+const Square = ({ children, isSelected, updateBoard, index, boardSize , setMouseKey, socket, player}) => {
   const state = useAppSelector((state) => state.tateti)
 
   const  {setBoard} = useBoardActions()
+  function getBaseNumber(index) {
+    const columnIndex = index % 7;
+    return columnIndex + 1;
+  }
+  
 
   const className = `square container-key ${isSelected ? "is-selected" : ""}`;
   const handleClick = () => {
-    updateBoard(index);
-  };
+    if(state.mode === "online"){
+      console.log("EL CLIK", state.turn !== player)
+      if (state.turn !== player) return;
+    const baseNumber =  getBaseNumber(index)
+
+      socket.emit("chat message", {
+        jugada: baseNumber.toString(),
+        turn: state.turn,
+        player: player,
+        board: state.board,
+      });
+    }else {
+      updateBoard(index);
+
+    }
+};
   // para el tateti
   function KeyBoardKeyTateti() {
     switch (index) {
@@ -104,7 +123,7 @@ const Square = ({ children, isSelected, updateBoard, index, boardSize }) => {
     } 
   }
   return (
-    <div onClick={handleClick} className={className}>
+    <div onClick={handleClick} className={`${className}`}>
       {children}
       {/* <span className="key">{index + 1}</span> */}
       {state.setting?.size === 9 ? <KeyBoardKeyTateti /> : <KeyBoard4InLine />}

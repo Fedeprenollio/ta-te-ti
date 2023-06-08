@@ -6,7 +6,6 @@ export const SelectMode = () => {
   const state = useAppSelector((state) => state.tateti)
   const {modeChange} = useBoardActions()
   const [mode, setMode] = useState("")
-  console.log("STATE", state)
 
 
   const handleMode =(e)=>{
@@ -15,7 +14,7 @@ export const SelectMode = () => {
     modeChange({newMode:mode})
   }
   return (
-    <form onSubmit={handleMode} onChange={(e)=> setMode(e.target.value)} className="form-mode">
+    <form onSubmit={handleMode} onChange={(e)=> setMode(e.target.value)} className="form-mode text-slate-500">
       <label htmlFor="mode">Selecciona un modo:</label>
       <div>
         <select name="mode" id="mode" >
