@@ -46,7 +46,7 @@ export const CreateRoom = ({
     // Conectar al servidor de Socket.IO
     //https://backend-playroom.vercel.app/
     //"http://localhost:3000"
-    const newSocket = io("http://localhost:3000/", {
+    const newSocket = io("https://play-room.onrender.com/", {
       query: {
         code: room,
       },
