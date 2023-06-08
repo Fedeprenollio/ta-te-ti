@@ -91,7 +91,9 @@ export const MembersList = ({
                     </button>
                   )}
                   {socket.id === player.id && player.status === "Jugador" && (
-                    <button value={TURNS.O} onClick={handleSeletSymbol}>
+                    <button 
+                    className="rounded-2xl bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 "
+                    value={TURNS.O} onClick={handleSeletSymbol}>
                       {TURNS.O}
                     </button>
                   )}
