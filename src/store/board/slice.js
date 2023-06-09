@@ -13,7 +13,7 @@ const DEFAULT_STATE = {
   },
   board: Array(42).fill(null),
   mode: "offline",
-  createdRoom: 0,
+  createdRoom: false,
   webSocket: 0,
   name:"",
   messages:[]
