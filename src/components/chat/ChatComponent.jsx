@@ -157,64 +157,7 @@ const ChatComponent = ({
   }
   return (
     <div>
-      {/* <ul>
-        {memberNames?.map((player, index) => (
-          <div
-            key={player.id}
-            style={{ display: "flex", justifyContent: "center" }}
-          >
-            <li key={index}>
-              {player.name} - {player.status} -{player.symbol}{" "}
-            </li>
-            {socket.id === player.id && (
-              <button value={"Jugador"} onClick={handleSeletStatus}>
-                Ser Jugador
-              </button>
-            )}
-            {socket.id === player.id && (
-              <button value={"Espectador"} onClick={handleSeletStatus}>
-                Ser espectador
-              </button>
-            )}
-            {socket.id === player.id && player.status === "Jugador" && (
-              <button className="rounded-2xl" value={TURNS.X} onClick={handleSeletSymbol}>
-                {TURNS.X}
-              </button>
-            )}
-            {socket.id === player.id && player.status === "Jugador" && (
-              <button value={TURNS.O} onClick={handleSeletSymbol}>
-                O
-              </button>
-            )}
-             {socket.id === player.id && player.status === "Jugador" && (
-
-              <form action="">
-                <label id="ready">Estoy listo</label>
-                <input type="checkbox" checked={isReady} onClick={handleStatusReady}  name="ready" id="ready" />
-              </form>
-
-            
-            )}
-            {socket.id === player.id && index === 0 && (
-              <button onClick={handleSelectMode} value={"modeTateti"}>
-                "Tateti"
-              </button>
-            )}
-            {socket.id === player.id && index === 0 && (
-              <button onClick={handleSelectMode} value={"mode4inLine"}>
-                "4 en linea"
-              </button>
-            )}
-             {socket.id === player.id && index === 0 && (
-             <form onSubmit={handleSubmitTimer} >
-              <label id="timer" >Tiempo</label>
-              <input name="timer" type="text" id="timer" placeholder="10 seg, 5 seg...." />
-              <button>Cambiar timer</button>
-             </form>
-            )}
-          </div>
-        ))}
-      </ul> */}
+  
       <MembersList memberNames={memberNames} socket={socket} handleSeletStatus={handleSeletStatus} handleSeletSymbol={handleSeletSymbol} handleStatusReady={handleStatusReady} handleSelectMode={handleSelectMode} handleSubmitTimer={handleSubmitTimer} isReady={isReady}/>
     </div>
   );

@@ -143,18 +143,20 @@ function App() {
 
   return (
     <main className="board">
-      <h1>Ta-te-ti</h1>
+      <h1 className="mb-0 text-5xl font-bold" >Ta-te-ti</h1>
+      <h5>({state.mode})</h5>
       <div className="container-setting">
-        <SelectGame />
-        <Timer timeLeft={timeLeft} classTime={classTime} />
+      {state.mode === "offline" &&  <SelectGame />}
+       
         <SelectMode />
+        <Timer timeLeft={timeLeft} classTime={classTime} />
       </div>
       <section className="turn">
         <Square isSelected={state.turn === TURNS.X}>{TURNS.X}</Square>
         <Square isSelected={state.turn === TURNS.O}>{TURNS.O}</Square>
       </section>
 
-      <button onClick={resetGame}>Resetear el juego</button>
+      <button className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mb-2"  onClick={resetGame}>Resetear el juego</button>
       <section className={`game ${state.setting.classNameGrid}`}>
         {state.board.map((_, index) => {
           return (

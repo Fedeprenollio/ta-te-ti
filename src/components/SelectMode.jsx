@@ -21,7 +21,7 @@ export const SelectMode = () => {
           <option value="offline">Off-line</option>
           <option value="online">On-line</option>
         </select>
-        <button className="btn">Cambiar</button>
+        <button className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full ml-2">Cambiar</button>
       </div>
     </form>
   );

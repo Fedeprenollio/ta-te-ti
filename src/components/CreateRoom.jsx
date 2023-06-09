@@ -73,20 +73,20 @@ export const CreateRoom = ({
   return (
     <div className="text-slate-500">
       {totalInRoom > 1 ? (
-        <p>Listo, seleccionen X o O</p>
+        <p className="text-green-600">Listo, seleccionen {TURNS.X} o {TURNS.O}</p>
       ) : (
-        <p>esperando a otro jugador...</p>
+        <p className="text-red-600">Esperando a otro jugador...</p>
       )}
       <div>
-        {state.createdRoom &&  <h2>Clave de la sala: {state.createdRoom && room}</h2>}
+        {state.createdRoom ?  <h2>Clave de la sala: {state.createdRoom && room}</h2> : <p>Crea una sala o únete a una con el código de tu amigo</p>}
         {/* {name &&  <h2>{name}</h2>} */}
 
         <form onSubmit={handleSubmitRoom}>
           <span>Clave de sala</span>
-          <input type="text" name="room" className="mr-10 ml-2"/>
+          <input placeholder="Ingresa un código único..." type="text" name="room" className="mr-10 ml-2 "/>
 
           <span>Tu nombre</span>
-          <input type="text" name="name" className="mr-10 ml-2" />
+          <input placeholder="Pepito..." type="text" name="name" className="mr-10 ml-2" />
           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" type="submit">Crer sala o unirse</button>
         </form>
       </div>

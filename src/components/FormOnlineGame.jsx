@@ -275,7 +275,7 @@ export const FormOnlineGame = ({ updateBoard, turn, socket, setSocket, player, s
           autoFocus
           placeholder="1 2 3 a s d..."
         />
-        <button type="submit">Jugar</button>
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" type="submit">Jugar</button>
       </form>
 
       {/* <div>

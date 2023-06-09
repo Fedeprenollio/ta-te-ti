@@ -17,10 +17,11 @@ const ChatForm = ({ sendMessage }) => {
     <div className="flex justify-end">
       <form onSubmit={handleSubmit} className="flex  w-full h-full items-center	">
         <input
+          placeholder='Escribe un mensaje aquí'
           type="text"
           value={message}
           onChange={handleChange}
-          className="flex-grow w-full"
+          className="flex-grow w-full pl-2"
         />
         <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full ml-2" type="submit">
           Enviar

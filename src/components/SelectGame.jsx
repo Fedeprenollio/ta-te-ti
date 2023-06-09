@@ -49,7 +49,7 @@ export const SelectGame = () => {
           <option value="tateti">Ta-te-ti</option>
           <option value="4inline">4 en linea</option>
         </select>
-        <button className="btn">Cambiar</button>
+        <button className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">Cambiar</button>
       </div>
     </form>
 

@@ -138,7 +138,6 @@ export const MembersList = ({
                 <TableCell>
                   {socket.id === player.id && index === 0 && (
                     <form onSubmit={handleSubmitTimer}>
-                      <label id="timer">Tiempo</label>
                       <input
                         name="timer"
                         type="text"

@@ -26,17 +26,11 @@ export const Timer = ({ timeLeft, classTime }) => {
       setError("El tiempo debe ser un número positivo y sin decimales")
     }
 
-    // if (!isNaN(timer) && timer !== "") {
-    //   setError(false);
-    //   // El valor es un número válido
-    //   const seconds = parseInt(timer, 10); // Convertir a entero si es necesario
-    //   // Realiza las operaciones necesarias con el valor numérico
-    //   // setTimer(seconds);
-    //   newTimer( seconds)
-    // } 
+ 
   };
   return (
     <div>
+      {state.mode === "offline"  &&
       <div>
         <form onSubmit={handleTimer} className="container-form text-slate-500">
           <label htmlFor="timer">Tiempo:</label>
@@ -48,12 +42,15 @@ export const Timer = ({ timeLeft, classTime }) => {
                 id="timer"
                 placeholder="10 segundos..."
               />
-            <button>Cambiar</button>
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" >Cambiar</button>
             </div>
               {error && <span className="error">{error}</span>}
           </div>
         </form>
       </div>
+      
+      }
+
       <div className="container-timer">
         <h4>Tiempo restante: </h4>
         <div
